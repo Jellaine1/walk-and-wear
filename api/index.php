@@ -1,7 +1,7 @@
 <?php
 
 $project_root = realpath(__DIR__ . '/..');
-$request_path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+$request_path = $_GET['__route'] ?? parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 $request_path = rawurldecode($request_path ?: '/');
 $relative_path = ltrim($request_path, '/');
 

@@ -5,7 +5,9 @@
     }
   },
   "routes": [
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/api/index.php" }
+    { "src": "^/api/index\\.php$", "dest": "/api/index.php?__route=index.php" },
+    { "src": "^/$", "dest": "/api/index.php?__route=index.php" },
+    { "src": "^/(.+\\.php)$", "dest": "/api/index.php?__route=$1" },
+    { "handle": "filesystem" }
   ]
 }
