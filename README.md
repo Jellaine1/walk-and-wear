@@ -30,7 +30,7 @@ walk-and-wear/
 
 ## Requirements
 
-- PHP 7.4+ (with the `mysqli` extension enabled)
+- PHP 8.0+ (with the `mysqli` extension enabled)
 - MySQL or MariaDB
 - A local server stack such as **XAMPP**, **WAMP**, **MAMP**, or `php -S` + a MySQL install
 
@@ -69,7 +69,7 @@ define('DB_NAME', 'walk_and_wear');
 
 ### Production hosting
 
-This application requires a PHP host and a MySQL-compatible database; it cannot be deployed to Vercel as-is. Connect the GitHub repository to a PHP host (for example, Railway) and create a hosted MySQL database. Set these environment variables in the host's service settings:
+The project can run on Vercel using the community `vercel-php` runtime configured in `vercel.json`. It still requires an external MySQL-compatible database; Vercel does not provide the MySQL server for this app. Connect the GitHub repository to Vercel and set these environment variables in the project's settings:
 
 - `DB_HOST`
 - `DB_PORT` (usually `3306`)
@@ -77,7 +77,7 @@ This application requires a PHP host and a MySQL-compatible database; it cannot 
 - `DB_PASS`
 - `DB_NAME`
 
-Import `database.sql` into the hosted database and apply any migrations required for the schema you are deploying. Before making the site public, change or remove the seeded admin and seller accounts listed below. Never commit production database credentials.
+Import `database.sql` into a new database, or run `vercel_sessions_migration.sql` against an existing one, then apply any other migrations required for the schema you are deploying. PHP sessions are stored in the `php_sessions` table so cart and login state can be shared between serverless invocations. Before making the site public, change or remove the seeded admin and seller accounts listed below. Never commit production database credentials.
 
 ### 3. Run the site
 

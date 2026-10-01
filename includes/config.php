@@ -34,8 +34,90 @@ if (!$conn) {
 
 mysqli_set_charset($conn, "utf8mb4");
 
+class DatabaseSessionHandler implements SessionHandlerInterface
+{
+    private $connection;
+
+    public function __construct($connection)
+    {
+        $this->connection = $connection;
+    }
+
+    public function open(string $path, string $name): bool
+    {
+        return true;
+    }
+
+    public function close(): bool
+    {
+        return true;
+    }
+
+    public function read(string $session_id): string|false
+    {
+        $stmt = mysqli_prepare($this->connection, 'SELECT session_data FROM php_sessions WHERE session_id = ? AND expires_at > ? LIMIT 1');
+        if (!$stmt) {
+            return false;
+        }
+
+        $now = time();
+        mysqli_stmt_bind_param($stmt, 'si', $session_id, $now);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $session = mysqli_fetch_assoc($result);
+        mysqli_stmt_close($stmt);
+
+        return $session ? $session['session_data'] : '';
+    }
+
+    public function write(string $session_id, string $session_data): bool
+    {
+        $stmt = mysqli_prepare($this->connection, 'INSERT INTO php_sessions (session_id, session_data, expires_at) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE session_data = VALUES(session_data), expires_at = VALUES(expires_at)');
+        if (!$stmt) {
+            return false;
+        }
+
+        $expires_at = time() + (int)ini_get('session.gc_maxlifetime');
+        mysqli_stmt_bind_param($stmt, 'ssi', $session_id, $session_data, $expires_at);
+        $saved = mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+
+        return $saved;
+    }
+
+    public function destroy(string $session_id): bool
+    {
+        $stmt = mysqli_prepare($this->connection, 'DELETE FROM php_sessions WHERE session_id = ?');
+        if (!$stmt) {
+            return false;
+        }
+
+        mysqli_stmt_bind_param($stmt, 's', $session_id);
+        $deleted = mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+
+        return $deleted;
+    }
+
+    public function gc(int $max_lifetime): int|false
+    {
+        $stmt = mysqli_prepare($this->connection, 'DELETE FROM php_sessions WHERE expires_at <= ?');
+        if (!$stmt) {
+            return false;
+        }
+
+        $expires_before = time();
+        mysqli_stmt_bind_param($stmt, 'i', $expires_before);
+        $deleted = mysqli_stmt_execute($stmt) ? mysqli_stmt_affected_rows($stmt) : false;
+        mysqli_stmt_close($stmt);
+
+        return $deleted;
+    }
+}
+
 // Start session for cart / login handling
 if (session_status() === PHP_SESSION_NONE) {
+    session_set_save_handler(new DatabaseSessionHandler($conn), true);
     session_start();
 }
 
