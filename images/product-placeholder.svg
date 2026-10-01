@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-labelledby="title desc">
+  <title id="title">Walk and Wear shoe</title>
+  <desc id="desc">A clean illustration of a modern sneaker</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e8f4f1"/>
+      <stop offset="1" stop-color="#c8e4df"/>
+    </linearGradient>
+    <linearGradient id="upper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fdfdfb"/>
+      <stop offset="1" stop-color="#d9e6e2"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="14"/>
+      <feOffset dy="18"/>
+      <feComponentTransfer><feFuncA type="linear" slope=".22"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="800" height="600" rx="28" fill="url(#background)"/>
+  <circle cx="130" cy="115" r="70" fill="#ffffff" opacity=".45"/>
+  <circle cx="690" cy="485" r="110" fill="#ffffff" opacity=".3"/>
+  <g filter="url(#shadow)" transform="rotate(-8 400 320)">
+    <path d="M168 365c84-15 151-47 202-126l52-78c12-18 37-21 54-7l88 74c25 21 48 44 73 62l67 48c28 20 35 59 12 86-17 20-45 29-71 26l-391-41c-40-4-69-20-86-44z" fill="url(#upper)" stroke="#244c4b" stroke-width="12" stroke-linejoin="round"/>
+    <path d="M168 365c27 27 66 40 108 44l391 41c-12 25-39 42-69 41l-390-19c-57-3-96-29-96-63 0-20 18-37 56-44z" fill="#ffffff" stroke="#244c4b" stroke-width="12" stroke-linejoin="round"/>
+    <path d="M420 175l27 112 87-38 51 42-137 48-86-63z" fill="#e7b54b" opacity=".95"/>
+    <path d="M399 217c33 9 64 29 87 57M383 246c32 10 60 28 82 54M367 276c27 9 54 26 75 50" fill="none" stroke="#244c4b" stroke-width="10" stroke-linecap="round"/>
+    <path d="M302 300c23 19 47 34 73 46" fill="none" stroke="#ef6f51" stroke-width="15" stroke-linecap="round"/>
+    <path d="M241 385c83 15 167 19 253 15" fill="none" stroke="#ef6f51" stroke-width="10" stroke-linecap="round"/>
+    <path d="M235 421l-21 25M295 428l-18 27M360 435l-16 27M428 440l-10 25" stroke="#244c4b" stroke-width="8" stroke-linecap="round" opacity=".7"/>
+  </g>
+  <text x="400" y="90" text-anchor="middle" font-family="Georgia, serif" font-size="38" font-weight="bold" fill="#244c4b">WALK &amp; WEAR</text>
+</svg>
