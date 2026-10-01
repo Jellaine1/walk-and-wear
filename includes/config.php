@@ -9,6 +9,16 @@ define('DB_PASS', getenv('DB_PASS') ?: '');
 define('DB_NAME', getenv('DB_NAME') ?: 'walk_and_wear');
 define('DB_PORT', (int)(getenv('DB_PORT') ?: 3306));
 
+if (getenv('VERCEL') !== false) {
+    foreach (['DB_HOST', 'DB_USER', 'DB_PASS', 'DB_NAME'] as $setting) {
+        if (getenv($setting) === false) {
+            error_log('Required database environment variables are missing.');
+            http_response_code(503);
+            exit('Store database is not configured. Add DB_HOST, DB_PORT, DB_USER, DB_PASS, and DB_NAME in Vercel project settings.');
+        }
+    }
+}
+
 $document_root = realpath($_SERVER['DOCUMENT_ROOT'] ?? '');
 $project_root = realpath(__DIR__ . '/..');
 $base_url = '';
@@ -26,10 +36,16 @@ function product_image_path($image)
     return $image !== '' && is_file($full_path) ? $image : 'images/product-placeholder.svg';
 }
 
-$conn = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
+try {
+    $conn = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
+} catch (mysqli_sql_exception $exception) {
+    error_log('Database connection failed: ' . $exception->getMessage());
+    $conn = false;
+}
 
 if (!$conn) {
-    die("Database connection failed: " . mysqli_connect_error());
+    http_response_code(503);
+    exit('Store database is unavailable. Verify the Vercel database settings and remote database access.');
 }
 
 mysqli_set_charset($conn, "utf8mb4");
